@@ -1,11 +1,11 @@
-#include "cse7761_powct.h"
+#include "cse7761.h"
 
 #include "esphome/core/log.h"
 
 namespace esphome {
-namespace cse7761_powct {
+namespace cse7761 {
 
-static const char *const TAG = "cse7761_powct";
+static const char *const TAG = "cse7761";
 
 /*********************************************************************************************\
  * CSE7761 - Energy  (Sonoff Dual R3 Pow v1.x)
@@ -57,7 +57,7 @@ static const uint8_t CSE7761_CMD_ENABLE_WRITE   = 0xE5;     // Enable write oper
 
 enum CSE7761 { RMS_IAC, RMS_IBC, RMS_UC, POWER_PAC, POWER_PBC, POWER_SC, ENERGY_AC, ENERGY_BC };
 
-void CSE7761PowCtComponent::setup() {
+void CSE7761Component::setup() {
   ESP_LOGCONFIG(TAG, "Setting up CSE7761...");
   this->write_(CSE7761_SPECIAL_COMMAND, CSE7761_CMD_RESET);
   uint16_t syscon = this->read_(0x00, 2);  // Default 0x0A04
@@ -70,7 +70,7 @@ void CSE7761PowCtComponent::setup() {
   }
 }
 
-void CSE7761PowCtComponent::dump_config() {
+void CSE7761Component::dump_config() {
   ESP_LOGCONFIG(TAG, "CSE7761:");
   if (this->is_failed()) {
     ESP_LOGE(TAG, "Communication with CSE7761 failed!");
@@ -79,15 +79,15 @@ void CSE7761PowCtComponent::dump_config() {
   this->check_uart_settings(38400, 1, uart::UART_CONFIG_PARITY_EVEN, 8);
 }
 
-float CSE7761PowCtComponent::get_setup_priority() const { return setup_priority::DATA; }
+float CSE7761Component::get_setup_priority() const { return setup_priority::DATA; }
 
-void CSE7761PowCtComponent::update() {
+void CSE7761Component::update() {
   if (this->data_.ready) {
     this->get_data_();
   }
 }
 
-void CSE7761PowCtComponent::write_(uint8_t reg, uint16_t data) {
+void CSE7761Component::write_(uint8_t reg, uint16_t data) {
   uint8_t buffer[5];
 
   buffer[0] = 0xA5;
@@ -113,7 +113,7 @@ void CSE7761PowCtComponent::write_(uint8_t reg, uint16_t data) {
   this->write_array(buffer, len);
 }
 
-bool CSE7761PowCtComponent::read_once_(uint8_t reg, uint8_t size, uint32_t *value) {
+bool CSE7761Component::read_once_(uint8_t reg, uint8_t size, uint32_t *value) {
   while (this->available()) {
     this->read();
   }
@@ -152,7 +152,7 @@ bool CSE7761PowCtComponent::read_once_(uint8_t reg, uint8_t size, uint32_t *valu
   return true;
 }
 
-uint32_t CSE7761PowCtComponent::read_(uint8_t reg, uint8_t size) {
+uint32_t CSE7761Component::read_(uint8_t reg, uint8_t size) {
   bool result = false;  // Start loop
   uint8_t retry = 3;    // Retry up to three times
   uint32_t value = 0;   // Default no value
@@ -165,7 +165,7 @@ uint32_t CSE7761PowCtComponent::read_(uint8_t reg, uint8_t size) {
   return value;
 }
 
-uint32_t CSE7761PowCtComponent::coefficient_by_unit_(uint32_t unit) {
+uint32_t CSE7761Component::coefficient_by_unit_(uint32_t unit) {
   uint32_t coeff = 1;
   if (this->data_.model == CSE7761_MODEL_POWCT) {
     coeff = 5;
@@ -181,7 +181,7 @@ uint32_t CSE7761PowCtComponent::coefficient_by_unit_(uint32_t unit) {
   return 0;
 }
 
-bool CSE7761PowCtComponent::chip_init_() {
+bool CSE7761Component::chip_init_() {
   uint16_t calc_chksum = 0xFFFF;
   for (uint32_t i = 0; i < 8; i++) {
     this->data_.coefficient[i] = this->read_(CSE7761_REG_RMSIAC + i, 2);
@@ -379,7 +379,7 @@ bool CSE7761PowCtComponent::chip_init_() {
   return true;
 }
 
-void CSE7761PowCtComponent::get_data_() {
+void CSE7761Component::get_data_() {
   // The effective value of current and voltage Rms is a 24-bit signed number,
   // the highest bit is 0 for valid data,
   //   and when the highest bit is 1, the reading will be processed as zero
