@@ -76,7 +76,7 @@ CONFIG_SCHEMA = (
                 accuracy_decimals=1,
                 state_class=STATE_CLASS_MEASUREMENT,
             ),
-            cv.Optional(CONF_SONOFF_MODEL, default="dualR3"): cv.enum(SONOFF_MODEL, upper=True),        
+            cv.Optional(CONF_SONOFF_MODEL, default="DUALR3"): cv.enum(SONOFF_MODEL, upper=True),        
         }
     )
     .extend(cv.polling_component_schema("60s"))
