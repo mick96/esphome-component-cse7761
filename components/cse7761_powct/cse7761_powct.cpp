@@ -150,13 +150,18 @@ uint32_t CSE7761PowCtComponent::read_(uint8_t reg, uint8_t size) {
 }
 
 uint32_t CSE7761PowCtComponent::coefficient_by_unit_(uint32_t unit) {
+  uint32_t coeff = 1;
+  // if (CSE7761_MODEL_POWCT == CSE7761Data.model) {
+  if (1) {
+    coeff = 5;
+  }
   switch (unit) {
     case RMS_UC:
       return 0x400000 * 100 / this->data_.coefficient[RMS_UC];
     case RMS_IAC:
-      return (0x800000 * 100 / this->data_.coefficient[RMS_IAC]) * 10;  // Stay within 32 bits
+      return (0x800000 * 100 / (this->data_.coefficient[RMS_IAC] * coeff )) * 10;  // Stay within 32 bits
     case POWER_PAC:
-      return 0x80000000 / this->data_.coefficient[POWER_PAC];
+      return 0x80000000 / (this->data_.coefficient[POWER_PAC] * coeff );
   }
   return 0;
 }
