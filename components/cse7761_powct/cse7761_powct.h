@@ -15,7 +15,6 @@ enum SonoffModel : uint8_t
 };
 
 struct CSE7761DataStruct {
-  uint32_t frequency = 0;
   uint32_t voltage_rms = 0;
   uint32_t frequency = 0;
   uint32_t current_rms[2] = {0};

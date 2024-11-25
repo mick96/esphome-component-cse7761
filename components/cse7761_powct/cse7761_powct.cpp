@@ -388,7 +388,7 @@ void CSE7761PowCtComponent::get_data_() {
   uint32_t value = this->read_(CSE7761_REG_RMSU, 3);
   this->data_.voltage_rms = (value >= 0x800000) ? 0 : value;
 
-  uint32_t value = this->read_(CSE7761_REG_UFREQ, 2);
+  value = this->read_(CSE7761_REG_UFREQ, 2);
   this->data_.frequency = (value >= 0x8000) ? 0 : value;
 
   value = this->read_(CSE7761_REG_RMSIA, 3);
