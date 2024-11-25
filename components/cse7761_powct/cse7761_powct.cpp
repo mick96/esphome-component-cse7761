@@ -1,4 +1,4 @@
-#include "cse7761.h"
+#include "cse7761_powct.h"
 
 #include "esphome/core/log.h"
 
