@@ -16,9 +16,9 @@ from esphome.const import (
 CODEOWNERS = ["@berfenger"]
 DEPENDENCIES = ["uart"]
 
-cse7761_ns = cg.esphome_ns.namespace("cse7761")
-CSE7761Component = cse7761_ns.class_(
-    "CSE7761Component", cg.PollingComponent, uart.UARTDevice
+cse7761_ns = cg.esphome_ns.namespace("cse7761_powct")
+CSE7761PowCtComponent = cse7761_ns.class_(
+    "CSE7761PowCtComponent", cg.PollingComponent, uart.UARTDevice
 )
 
 CONF_CURRENT_1 = "current_1"
@@ -29,7 +29,7 @@ CONF_ACTIVE_POWER_2 = "active_power_2"
 CONFIG_SCHEMA = (
     cv.Schema(
         {
-            cv.GenerateID(): cv.declare_id(CSE7761Component),
+            cv.GenerateID(): cv.declare_id(CSE7761PowCtComponent),
             cv.Optional(CONF_VOLTAGE): sensor.sensor_schema(
                 unit_of_measurement=UNIT_VOLT,
                 accuracy_decimals=1,
@@ -67,7 +67,7 @@ CONFIG_SCHEMA = (
 )
 
 FINAL_VALIDATE_SCHEMA = uart.final_validate_device_schema(
-    "cse7761", baud_rate=38400, require_rx=True, require_tx=True
+    "cse7761_powct", baud_rate=38400, require_rx=True, require_tx=True
 )
 
 
